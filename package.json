@@ -14,7 +14,9 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "test:api": "powershell -ExecutionPolicy Bypass -File ./scripts/test-api.ps1",
+    "quick-start": "powershell -ExecutionPolicy Bypass -File ./scripts/quick-start.ps1"
   },
   "dependencies": {
     "@prisma/client": "^7.3.0",
