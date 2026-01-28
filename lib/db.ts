@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
 
 const globalForPrisma = globalThis as unknown as {
@@ -16,12 +17,6 @@ export const prisma =
             { level: 'warn', emit: 'stdout' },
           ]
         : [{ level: 'error', emit: 'stdout' }],
-    // 连接池配置
-    datasources: {
-      db: {
-        url: process.env.DATABASE_URL,
-      },
-    },
   });
 
 // 在开发环境下记录查询日志

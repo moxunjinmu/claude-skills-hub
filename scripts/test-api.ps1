@@ -1,15 +1,15 @@
-# API 测试脚本 (PowerShell)
-# 使用方法: .\scripts\test-api.ps1
+# API Test Script (PowerShell)
+# Usage: .\scripts\test-api.ps1
 
-$BaseUrl = "http://localhost:3000"
+$BaseUrl = "http://localhost:3004"
 
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "Claude Skills Hub - API 测试" -ForegroundColor Cyan
+Write-Host "Claude Skills Hub - API Test" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# 测试 1: 用户注册
-Write-Host "测试 1: 用户注册" -ForegroundColor Yellow
+# Test 1: User Registration
+Write-Host "Test 1: User Registration" -ForegroundColor Yellow
 $registerBody = @{
     email = "testuser@example.com"
     username = "testuser"
@@ -23,21 +23,21 @@ try {
         -Body $registerBody
 
     if ($registerResponse.message -eq "User registered successfully") {
-        Write-Host "✓ 注册成功" -ForegroundColor Green
+        Write-Host "Success: User registered" -ForegroundColor Green
         $token = $registerResponse.data.token
         Write-Host "Token: $($token.Substring(0, 20))..."
     }
 } catch {
     if ($_.Exception.Response.StatusCode -eq 409) {
-        Write-Host "! 用户已存在，尝试登录..." -ForegroundColor Yellow
+        Write-Host "User already exists, trying login..." -ForegroundColor Yellow
     } else {
-        Write-Host "✗ 注册失败: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "Failed: $($_.Exception.Message)" -ForegroundColor Red
     }
 }
 Write-Host ""
 
-# 测试 2: 用户登录
-Write-Host "测试 2: 用户登录" -ForegroundColor Yellow
+# Test 2: User Login
+Write-Host "Test 2: User Login" -ForegroundColor Yellow
 $loginBody = @{
     email = "testuser@example.com"
     password = "password123"
@@ -50,46 +50,46 @@ try {
         -Body $loginBody
 
     if ($loginResponse.message -eq "Login successful") {
-        Write-Host "✓ 登录成功" -ForegroundColor Green
+        Write-Host "Success: Login successful" -ForegroundColor Green
         $token = $loginResponse.data.token
         Write-Host "User ID: $($loginResponse.data.userId)"
     }
 } catch {
-    Write-Host "✗ 登录失败: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Failed: $($_.Exception.Message)" -ForegroundColor Red
 }
 Write-Host ""
 
-# 测试 3: 获取 Skills 列表
-Write-Host "测试 3: 获取 Skills 列表" -ForegroundColor Yellow
+# Test 3: Get Skills List
+Write-Host "Test 3: Get Skills List" -ForegroundColor Yellow
 try {
     $skillsResponse = Invoke-RestMethod -Uri "$BaseUrl/api/skills" -Method Get
 
     if ($skillsResponse.message -eq "Skills retrieved successfully") {
-        Write-Host "✓ 获取成功" -ForegroundColor Green
-        Write-Host "总共 $($skillsResponse.data.total) 个 Skills"
-        Write-Host "当前页: $($skillsResponse.data.page)"
+        Write-Host "Success: Skills retrieved" -ForegroundColor Green
+        Write-Host "Total: $($skillsResponse.data.total) skills"
+        Write-Host "Current page: $($skillsResponse.data.page)"
     }
 } catch {
-    Write-Host "✗ 获取失败: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Failed: $($_.Exception.Message)" -ForegroundColor Red
 }
 Write-Host ""
 
-# 测试 4: 带筛选的 Skills 列表
-Write-Host "测试 4: 带筛选的 Skills 列表" -ForegroundColor Yellow
+# Test 4: Filtered Skills List
+Write-Host "Test 4: Filtered Skills List" -ForegroundColor Yellow
 try {
     $filteredResponse = Invoke-RestMethod -Uri "$BaseUrl/api/skills?sort=newest&limit=5" -Method Get
 
     if ($filteredResponse.message -eq "Skills retrieved successfully") {
-        Write-Host "✓ 筛选成功" -ForegroundColor Green
-        Write-Host "返回 $($filteredResponse.data.skills.Count) 个结果"
+        Write-Host "Success: Filtered skills retrieved" -ForegroundColor Green
+        Write-Host "Results: $($filteredResponse.data.skills.Count) skills"
     }
 } catch {
-    Write-Host "✗ 筛选失败: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Failed: $($_.Exception.Message)" -ForegroundColor Red
 }
 Write-Host ""
 
-# 测试 5: 错误处理 - 无效登录
-Write-Host "测试 5: 错误处理 - 无效登录" -ForegroundColor Yellow
+# Test 5: Error Handling - Invalid Login
+Write-Host "Test 5: Error Handling - Invalid Login" -ForegroundColor Yellow
 $invalidLoginBody = @{
     email = "invalid@example.com"
     password = "wrongpassword"
@@ -101,16 +101,16 @@ try {
         -ContentType "application/json" `
         -Body $invalidLoginBody
     
-    Write-Host "✗ 应该返回错误但成功了" -ForegroundColor Red
+    Write-Host "Failed: Should have returned error" -ForegroundColor Red
 } catch {
     if ($_.Exception.Response.StatusCode -eq 401) {
-        Write-Host "✓ 错误处理正确 (401 Unauthorized)" -ForegroundColor Green
+        Write-Host "Success: Error handling correct (401 Unauthorized)" -ForegroundColor Green
     } else {
-        Write-Host "! 返回了错误但状态码不对: $($_.Exception.Response.StatusCode)" -ForegroundColor Yellow
+        Write-Host "Warning: Wrong status code: $($_.Exception.Response.StatusCode)" -ForegroundColor Yellow
     }
 }
 Write-Host ""
 
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "测试完成！" -ForegroundColor Cyan
+Write-Host "Tests Complete!" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
