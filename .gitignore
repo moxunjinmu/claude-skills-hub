@@ -39,3 +39,30 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prisma
+/prisma/migrations/*_migration.sql
+
+# docker
+docker-compose.override.yml
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+
+# logs
+logs
+*.log
+
+# uploads
+/uploads/*
+!/uploads/.gitkeep
+
+/lib/generated/prisma
